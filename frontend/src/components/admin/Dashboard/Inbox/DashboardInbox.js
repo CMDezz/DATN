@@ -4,13 +4,13 @@ import '../../../../Styles/Dashboard.css'
 import { useEffect, useState } from 'react'
 import socketIOClient from "socket.io-client"
 import axios from 'axios'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome' 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 
-const ENDPOINT = "http://pe.heromc.net:4000";
+const ENDPOINT = "http://localhost:4000";
 
 export default function DashboardInbox(props) {
-    
+
     const [allChatData, setAllChatData] = useState([])
     const [constAllChatData, setConstAllChatData] = useState([])
     const [roomId, setRoomId] = useState(0);
@@ -24,8 +24,8 @@ export default function DashboardInbox(props) {
         socket.emit('join', {
             sessionId: 'admin',
             isAdmin: true
-        }) 
-        socket.on('send-all-chat', (data)=>{
+        })
+        socket.on('send-all-chat', (data) => {
             setAllChatData(data)
             setConstAllChatData(data)
             if (window.innerWidth > 700) {
@@ -35,7 +35,7 @@ export default function DashboardInbox(props) {
                 }
             }
         })
-        socket.on("client-msg", function(data) {
+        socket.on("client-msg", function (data) {
             setAllChatData(data.allchat)
             setConstAllChatData(data.allchat)
             if (messageRef.current) messageRef.current.scrollIntoView({ behavior: "smooth" })
@@ -43,7 +43,7 @@ export default function DashboardInbox(props) {
         if (window.innerWidth <= 700) {
             setRoomIndex(null)
         }
-    },[])
+    }, [])
 
     const handleOnChange = (event) => {
         setChatInput(event.target.value)
@@ -61,7 +61,7 @@ export default function DashboardInbox(props) {
             roomId: roomId
         }
         socket.emit('messageSend-admin', data)
-        setTimeout(()=> {
+        setTimeout(() => {
             axios.get(`http://localhost:4000/chat`)
                 .then(res => {
                     setAllChatData(res.data)
@@ -69,7 +69,7 @@ export default function DashboardInbox(props) {
                     setChatInput("")
                     if (messageRef.current) messageRef.current.scrollIntoView({ behavior: "smooth" })
                 }
-            )
+                )
         }, 100)
     }
 
@@ -101,19 +101,19 @@ export default function DashboardInbox(props) {
         <div className="boxchat-admin flex">
             <div className="boxchat-left">
                 <div className="boxchat-search">
-                    <input 
-                        type="text" 
+                    <input
+                        type="text"
                         placeholder="Search"
                         value={searchInput}
-                        onChange={(event)=>{
+                        onChange={(event) => {
                             setSearchInput(event.target.value)
                             filterOnSearch(event.target.value)
                         }}
                     ></input>
                 </div>
                 <div className="boxchat-list">
-                    { sortDateChat.length > 0 && 
-                        sortDateChat.map((item,index)=>{
+                    {sortDateChat.length > 0 &&
+                        sortDateChat.map((item, index) => {
                             const date = new Date(item.chatContent[item.chatContent.length - 1].time)
                             const toDay = new Date()
                             const day = date.getDay();
@@ -128,55 +128,55 @@ export default function DashboardInbox(props) {
                                 } else {
                                     strTime += `- ${hour}`
                                 }
-                                if (minute < 10){
+                                if (minute < 10) {
                                     strTime += `:0${minute}`
                                 } else {
                                     strTime += `:${minute}`
                                 }
-                            } 
+                            }
                             if (dayInMonth < toDay.getDate()) {
                                 strTime = `- T${day}`
-                            } 
-                            if ((toDay.getDate()- dayInMonth) > 6) {
+                            }
+                            if ((toDay.getDate() - dayInMonth) > 6) {
                                 strTime = ""
                                 if (dayInMonth < 10) {
                                     strTime += `- 0${dayInMonth}`
                                 } else {
                                     strTime += `- ${dayInMonth}`
                                 }
-                                if (month < 10){
+                                if (month < 10) {
                                     strTime += `/0${month}`
                                 } else {
                                     strTime += `/${month}`
                                 }
                             }
                             return (
-                                <div 
+                                <div
                                     key={index}
                                     className={roomIndex === index ? "boxchat-item flex boxchat-item-active" : "boxchat-item flex"}
-                                    onClick={()=>{
+                                    onClick={() => {
                                         setRoomId(item.sessionId)
                                         setRoomIndex(index)
-                                        setTimeout(()=>{
+                                        setTimeout(() => {
                                             if (messageRef.current) messageRef.current.scrollIntoView({ behavior: "smooth" })
                                         }, 10)
                                     }}
                                 >
-                                    <div className="boxchat-avt flex-center" style={{pointerEvents: 'none'}}>
-                                        { item.userInfo && 
-                                            <img 
+                                    <div className="boxchat-avt flex-center" style={{ pointerEvents: 'none' }}>
+                                        {item.userInfo &&
+                                            <img
                                                 src={item.userInfo.userAvt}
                                                 alt=""
                                             ></img>
                                         }
-                                        { !item.userInfo && 
-                                            <img 
-                                                src={"http://localhost:4000/images/16f9bbf512b66a228f7978e34d8fb163"}
+                                        {!item.userInfo &&
+                                            <img
+                                                src={"http://localhost:4000/images/16f9bbf512b66a228f7978e34d8fb163.jpeg"}
                                                 alt=""
                                             ></img>
                                         }
                                     </div>
-                                    <div className="flex-col" style={{pointerEvents: 'none', width: '100%', justifyContent: 'space-between'}}>
+                                    <div className="flex-col" style={{ pointerEvents: 'none', width: '100%', justifyContent: 'space-between' }}>
                                         <p className="boxchat-name">{item.chatName}</p>
                                         <div className="boxchat-first flex">
                                             {
@@ -197,41 +197,41 @@ export default function DashboardInbox(props) {
                 </div>
             </div>
             {
-                (typeof(roomIndex) === 'number' && window.innerWidth <= 700)&&
+                (typeof (roomIndex) === 'number' && window.innerWidth <= 700) &&
                 <div className="boxchat-mobile flex">
                     <div className="boxchat-mobile-header flex">
-                        <div 
+                        <div
                             className="boxchat-mobile-header-leave"
-                            onClick={()=>{
+                            onClick={() => {
                                 setRoomIndex(null)
                             }}
                         >
-                            <FontAwesomeIcon icon={faChevronLeft} style={{pointerEvents: 'none'}}/>
+                            <FontAwesomeIcon icon={faChevronLeft} style={{ pointerEvents: 'none' }} />
                         </div>
-                        { sortDateChat.length > 0 &&
+                        {sortDateChat.length > 0 &&
                             <div className="boxchat-box-info">
                                 <div className="boxchat-box-avt flex-center">
-                                    { sortDateChat[Number(roomIndex)].userInfo && 
-                                        <img 
+                                    {sortDateChat[Number(roomIndex)].userInfo &&
+                                        <img
                                             src={sortDateChat[Number(roomIndex)].userInfo.userAvt}
                                             alt=""
                                         ></img>
                                     }
-                                    { !sortDateChat[Number(roomIndex)].userInfo && 
-                                        <img 
-                                            src={"http://localhost:4000/images/16f9bbf512b66a228f7978e34d8fb163"}
+                                    {!sortDateChat[Number(roomIndex)].userInfo &&
+                                        <img
+                                            src={"http://localhost:4000/images/16f9bbf512b66a228f7978e34d8fb163.jpeg"}
                                             alt=""
                                         ></img>
                                     }
                                 </div>
                                 <div className="flex-center">
-                                    { sortDateChat[Number(roomIndex)].userInfo && 
+                                    {sortDateChat[Number(roomIndex)].userInfo &&
                                         <p className="boxchat-name">{allChatData[Number(roomIndex)].chatName}</p>
                                     }
-                                    { !sortDateChat[Number(roomIndex)].userInfo &&
-                                        <div className="flex" style={{alignItems: 'flex-end'}}>
+                                    {!sortDateChat[Number(roomIndex)].userInfo &&
+                                        <div className="flex" style={{ alignItems: 'flex-end' }}>
                                             <p className="boxchat-name">{allChatData[Number(roomIndex)].chatName}</p>
-                                            <p style={{marginLeft: '5px', color: '#777', fontSize: '16px', fontFamily: 'sans-serif'}}>(anonymous)</p>
+                                            <p style={{ marginLeft: '5px', color: '#777', fontSize: '16px', fontFamily: 'sans-serif' }}>(anonymous)</p>
                                         </div>
                                     }
                                 </div>
@@ -239,11 +239,11 @@ export default function DashboardInbox(props) {
                         }
                     </div>
                     <div className="boxchat-mobile-main">
-                        <div 
+                        <div
                             className="boxchat-contents"
                         >
-                            { sortDateChat.length > 0 &&
-                                <div 
+                            {sortDateChat.length > 0 &&
+                                <div
                                     className="flex-col chat-box-list">
                                     {
                                         sortDateChat[roomIndex].chatContent.map((item, index) => {
@@ -261,45 +261,45 @@ export default function DashboardInbox(props) {
                                                 } else {
                                                     chatTime += `${hour}`
                                                 }
-                                                if (minute < 10){
+                                                if (minute < 10) {
                                                     chatTime += `:0${minute}`
                                                 } else {
                                                     chatTime += `:${minute}`
                                                 }
-                                            } 
+                                            }
                                             if (dayInMonth < toDay.getDate()) {
                                                 chatTime = `T${day}`
-                                            } 
-                                            if ((toDay.getDate()- dayInMonth) > 6) {
+                                            }
+                                            if ((toDay.getDate() - dayInMonth) > 6) {
                                                 chatTime = ""
                                                 if (dayInMonth < 10) {
                                                     chatTime += `0${dayInMonth}`
                                                 } else {
                                                     chatTime += `${dayInMonth}`
                                                 }
-                                                if (month < 10){
+                                                if (month < 10) {
                                                     chatTime += `/0${month}`
                                                 } else {
                                                     chatTime += `/${month}`
                                                 }
                                             }
                                             return (
-                                                <div 
+                                                <div
                                                     ref={messageRef}
                                                     key={index}
                                                     className="chat-list">
                                                     {
-                                                        item.fromAdmin !== true && 
+                                                        item.fromAdmin !== true &&
                                                         <div className="box-chat-clienttext"
-                                                            onMouseEnter={()=>{
+                                                            onMouseEnter={() => {
                                                                 setOpenTimeTooltip(item.time)
                                                             }}
-                                                            onMouseLeave={()=>{
+                                                            onMouseLeave={() => {
                                                                 setOpenTimeTooltip("")
                                                             }}
                                                         >
                                                             <p>{item.text}</p>
-                                                            { openTimeTooltip === item.time &&
+                                                            {openTimeTooltip === item.time &&
                                                                 <div className="time-tooltip-client flex-center">
                                                                     <p>{chatTime}</p>
                                                                 </div>
@@ -307,17 +307,17 @@ export default function DashboardInbox(props) {
                                                         </div>
                                                     }
                                                     {
-                                                        item.fromAdmin === true && 
+                                                        item.fromAdmin === true &&
                                                         <div className="box-chat-admintext"
-                                                            onMouseEnter={()=>{
+                                                            onMouseEnter={() => {
                                                                 setOpenTimeTooltip(item.time)
                                                             }}
-                                                            onMouseLeave={()=>{
+                                                            onMouseLeave={() => {
                                                                 setOpenTimeTooltip("")
                                                             }}
                                                         >
-                                                            <p style={{pointerEvents: 'none'}}>{item.text}</p>
-                                                            { openTimeTooltip === item.time &&
+                                                            <p style={{ pointerEvents: 'none' }}>{item.text}</p>
+                                                            {openTimeTooltip === item.time &&
                                                                 <div className="time-tooltip flex-center">
                                                                     <p>{chatTime}</p>
                                                                 </div>
@@ -328,14 +328,14 @@ export default function DashboardInbox(props) {
                                             )
                                         })
                                     }
-                                </div>  
+                                </div>
                             }
-                        </div>                    
+                        </div>
                     </div>
                     <div className="boxchat-type boxchat-mobile-type">
                         <form onSubmit={sendChatInput} className="boxchat-type-form">
-                            <input 
-                                type="text" 
+                            <input
+                                type="text"
                                 onChange={handleOnChange}
                                 value={chatInput}
                                 placeholder="Type your message..."
@@ -347,40 +347,40 @@ export default function DashboardInbox(props) {
             }
             <div className="boxchat-main">
                 <div className="boxchat-box">
-                    { (sortDateChat.length>0) &&
+                    {(sortDateChat.length > 0) &&
                         <div className="boxchat-box-info">
                             <div className="boxchat-box-avt flex-center">
-                                { sortDateChat[Number(roomIndex)].userInfo && 
-                                    <img 
+                                {sortDateChat[Number(roomIndex)].userInfo &&
+                                    <img
                                         src={sortDateChat[Number(roomIndex)].userInfo.userAvt}
                                         alt=""
                                     ></img>
                                 }
-                                { !sortDateChat[Number(roomIndex)].userInfo && 
-                                    <img 
-                                        src={"http://localhost:4000/images/16f9bbf512b66a228f7978e34d8fb163"}
+                                {!sortDateChat[Number(roomIndex)].userInfo &&
+                                    <img
+                                        src={"http://localhost:4000/images/16f9bbf512b66a228f7978e34d8fb163.jpeg"}
                                         alt=""
                                     ></img>
                                 }
                             </div>
                             <div className="flex-center">
-                                { sortDateChat[Number(roomIndex)].userInfo && 
+                                {sortDateChat[Number(roomIndex)].userInfo &&
                                     <p className="boxchat-name">{allChatData[Number(roomIndex)].chatName}</p>
                                 }
-                                { !sortDateChat[Number(roomIndex)].userInfo &&
-                                    <div className="flex" style={{alignItems: 'flex-end'}}>
+                                {!sortDateChat[Number(roomIndex)].userInfo &&
+                                    <div className="flex" style={{ alignItems: 'flex-end' }}>
                                         <p className="boxchat-name">{allChatData[Number(roomIndex)].chatName}</p>
-                                        <p style={{marginLeft: '5px', color: '#777', fontSize: '16px', fontFamily: 'sans-serif'}}>(anonymous)</p>
+                                        <p style={{ marginLeft: '5px', color: '#777', fontSize: '16px', fontFamily: 'sans-serif' }}>(anonymous)</p>
                                     </div>
                                 }
                             </div>
                         </div>
                     }
-                    <div 
+                    <div
                         className="boxchat-contents"
                     >
-                        { (sortDateChat.length>0 && window.innerWidth > 700)&&
-                            <div 
+                        {(sortDateChat.length > 0 && window.innerWidth > 700) &&
+                            <div
                                 className="flex-col chat-box-list">
                                 {
                                     sortDateChat[roomIndex].chatContent.map((item, index) => {
@@ -398,45 +398,45 @@ export default function DashboardInbox(props) {
                                             } else {
                                                 chatTime += `${hour}`
                                             }
-                                            if (minute < 10){
+                                            if (minute < 10) {
                                                 chatTime += `:0${minute}`
                                             } else {
                                                 chatTime += `:${minute}`
                                             }
-                                        } 
+                                        }
                                         if (dayInMonth < toDay.getDate()) {
                                             chatTime = `T${day}`
-                                        } 
-                                        if ((toDay.getDate()- dayInMonth) > 6) {
+                                        }
+                                        if ((toDay.getDate() - dayInMonth) > 6) {
                                             chatTime = ""
                                             if (dayInMonth < 10) {
                                                 chatTime += `0${dayInMonth}`
                                             } else {
                                                 chatTime += `${dayInMonth}`
                                             }
-                                            if (month < 10){
+                                            if (month < 10) {
                                                 chatTime += `/0${month}`
                                             } else {
                                                 chatTime += `/${month}`
                                             }
                                         }
                                         return (
-                                            <div 
+                                            <div
                                                 ref={messageRef}
                                                 key={index}
                                                 className="chat-list">
                                                 {
-                                                    item.fromAdmin !== true && 
+                                                    item.fromAdmin !== true &&
                                                     <div className="box-chat-clienttext"
-                                                        onMouseEnter={()=>{
+                                                        onMouseEnter={() => {
                                                             setOpenTimeTooltip(item.time)
                                                         }}
-                                                        onMouseLeave={()=>{
+                                                        onMouseLeave={() => {
                                                             setOpenTimeTooltip("")
                                                         }}
                                                     >
                                                         <p>{item.text}</p>
-                                                        { openTimeTooltip === item.time &&
+                                                        {openTimeTooltip === item.time &&
                                                             <div className="time-tooltip-client flex-center">
                                                                 <p>{chatTime}</p>
                                                             </div>
@@ -444,17 +444,17 @@ export default function DashboardInbox(props) {
                                                     </div>
                                                 }
                                                 {
-                                                    item.fromAdmin === true && 
+                                                    item.fromAdmin === true &&
                                                     <div className="box-chat-admintext"
-                                                        onMouseEnter={()=>{
+                                                        onMouseEnter={() => {
                                                             setOpenTimeTooltip(item.time)
                                                         }}
-                                                        onMouseLeave={()=>{
+                                                        onMouseLeave={() => {
                                                             setOpenTimeTooltip("")
                                                         }}
                                                     >
-                                                        <p style={{pointerEvents: 'none'}}>{item.text}</p>
-                                                        { openTimeTooltip === item.time &&
+                                                        <p style={{ pointerEvents: 'none' }}>{item.text}</p>
+                                                        {openTimeTooltip === item.time &&
                                                             <div className="time-tooltip flex-center">
                                                                 <p>{chatTime}</p>
                                                             </div>
@@ -465,14 +465,14 @@ export default function DashboardInbox(props) {
                                         )
                                     })
                                 }
-                            </div>  
+                            </div>
                         }
                     </div>
                 </div>
                 <div className="boxchat-type">
                     <form onSubmit={sendChatInput} className="boxchat-type-form">
-                        <input 
-                            type="text" 
+                        <input
+                            type="text"
                             onChange={handleOnChange}
                             value={chatInput}
                             placeholder="Type your message..."

@@ -8,7 +8,7 @@ import { faEnvelope, faFileInvoice, faHome, faInbox, faNewspaper, faShoppingBag,
 import socketIOClient from "socket.io-client" 
 import Axios from 'axios'
 import { withRouter } from 'react-router-dom'
-const ENDPOINT = "http://pe.heromc.net:4000";
+const ENDPOINT = "http://localhost:4000";
 
 function Dashboard(props) {
     const menuItems = [
